@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  
+<script>
+
+var AV = require('leancloud-storage');
+
+var APP_ID = 'I0OYbUAQejNsxePRRTSbvY28-gzGzoHsz';
+var APP_KEY = 'jezJFgqFI9n7wP4KXzxF0oNU';
+
+AV.init({
+  appId: APP_ID,
+  appKey: APP_KEY
+});
+
+var TestObject = AV.Object.extend('TestObject');
+var testObject = new TestObject();
+testObject.save({
+  words: 'Hello World!'
+}).then(function(object) {
+  alert('LeanCloud Rocks!');
+})
+
+
+</script>
+</body>
+</html>
