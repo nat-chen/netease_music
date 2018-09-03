@@ -7,9 +7,11 @@
   <title>Document</title>
 </head>
 <body>
-  
+  <div id="yyy">
+    <button id="xxx">upload</button>
+  </div>
+  <audio controls src=""></audio>
 <script>
-
 var AV = require('leancloud-storage');
 
 var APP_ID = 'I0OYbUAQejNsxePRRTSbvY28-gzGzoHsz';
@@ -24,7 +26,7 @@ var TestObject = AV.Object.extend('TestObject');
 var testObject = new TestObject();
 testObject.save({
   words: 'Hello World!'
-}).then(function(object) {
+}).then(function (object) {
   alert('LeanCloud Rocks!');
 })
 

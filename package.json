@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "leancloud-realtime": "^4.2.0"
+    "leancloud-realtime": "^4.2.0",
+    "leancloud-storage": "^3.10.0",
+    "plupload": "^2.3.6",
+    "qiniu": "^7.2.1",
+    "qiniu-js": "^1.0.24"
   },
   "devDependencies": {},
   "scripts": {
