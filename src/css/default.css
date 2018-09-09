@@ -35,8 +35,11 @@ body {
   background: #d4d4d4;
 }
 
-.songList {
+#songList-container {
   flex-grow: 1;
+}
+
+.songList {
   text-align: left;
   border-top: 1px solid #999;
 }
@@ -74,8 +77,8 @@ main {
   font-size: 14px;
 }
 
-.form > h2 {
-  padding-left: calc(5em + 5px);
+main h1 {
+  padding-left: calc(4em + 5px);
 }
 
 .form > .row {
