@@ -61,9 +61,9 @@
             var sourceLink = domain + '/' + encodeURIComponent(response.key); //获取上传成功后的文件的Url
             var data = {
               url: sourceLink,
-              key: response.key
+              name: response.key
             }
-            window.eventHub.emit('upload', data);
+            window.eventHub.emit('new', data);
           },
           'Error': function (up, err, errTip) {
             //上传出错时,处理相关的事情

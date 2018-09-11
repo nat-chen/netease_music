@@ -2,10 +2,9 @@
   let view = {
     el: '.page > main',
     template: `
-      <h1>新建歌单</h1>
       <form class="form">
         <div class="row">
-          <label>歌名</label><input name="name" value="__key__" type="text">
+          <label>歌名</label><input name="name" value="__name__" type="text">
         </div>
         <div class="row">
           <label>歌手</label><input name="singer" value="__singer__" type="text">
@@ -22,12 +21,17 @@
       this.$el = $(this.el);
     },
     render(data = {}) {
-      let placeholders = ['key', 'url', 'singer', 'id'];
+      let placeholders = ['name', 'url', 'singer', 'id'];
       let html = this.template;
       placeholders.map((string) => {
         html = html.replace(`__${string}__`, data[string] || '');
       });
       $(this.el).html(html);
+      if (data.id) {
+        $(this.el).prepend('<h1>编辑歌曲</h1>')
+      } else {
+        $(this.el).prepend('<h1>新建歌曲</h1>')
+      }
     },
     reset() {
       $(this.el).find('input[type="text"]').map((index, input) => {
@@ -39,6 +43,14 @@
   let model = {
     data: {
       name: '', singer: '', url: '', id: '',
+    },
+    update(data) {
+      Object.assign(this.data, data);
+      var song = AV.Object.createWithoutData('Song', this.data.id);
+      song.set('name', data.name);
+      song.set('singer', data.singer);
+      song.set('url', data.url);
+      return song.save();
     },
     create(data) {
       // 声明一个 song 类型
@@ -67,23 +79,52 @@
       this.view.init();
       this.bindEvents();
       this.view.render(this.model.data);
-      window.eventHub.on('upload', (data) => { 
-        this.view.render(data);
+      window.eventHub.on('new', (data) => { 
+        if (this.model.data.id) {
+          this.model.data = {
+            name: '', url: '', id: '', singer: '',
+          };
+        } else {
+          Object.assign(this.model.data, data); //data 可能为 undefined 来自 new_song
+        }
+        this.view.render(this.model.data);
+      });
+      window.eventHub.on('select', data => {
+        this.model.data = data;
+        this.view.render(this.model.data);
+      });
+    },
+    create() {
+      let needs = 'name singer url'.split(' ');
+      let data = {};
+      needs.map(string => {
+        data[string] = this.view.$el.find(`[name='${string}']`).val();
+      });
+      this.model.create(data).then( () => {
+        this.view.reset();
+        let string = JSON.stringify(this.model.data);
+        let object = JSON.parse(string);
+        window.eventHub.emit('create', object); // 确认每次传递的 this.model.data 为一个全新的对象
+      });
+    },
+    update() {
+      let needs = 'name singer url'.split(' ');
+      let data = {};
+      needs.map(string => {
+        data[string] = this.view.$el.find(`[name="${string}"]`).val();
       })
+      this.model.update(data).then(() => {
+        window.eventHub.emit('update', JSON.parse(JSON.stringify(this.model.data)));
+      });
     },
     bindEvents() {
       this.view.$el.on('submit', 'form', e => {
         e.preventDefault(); 
-        let needs = 'name singer url'.split(' ');
-        let data = {};
-        needs.map(string => {
-          data[string] = this.view.$el.find(`[name='${string}']`).val();
-        });
-        this.model.create(data).then( () => {
-          this.view.reset();
-          console.log(this.model.data);
-          window.eventHub.emit('create', this.model.data); // 确认每次传递的 this.model.data 为一个全新的对象
-        });
+        if (this.model.data.id) {
+          this.update();
+        } else {
+          this.create();
+        }
       })
     },
   }
