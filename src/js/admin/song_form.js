@@ -12,6 +12,9 @@
         <div class="row">
           <label>链接</label><input name="url" value="__url__" type="text">
         </div>
+        <div class="row">
+          <label>封面</label><input name="cover" value="__cover__" type="text">
+        </div>
         <div class="row actions">
           <input type="submit" value="提交">
         </div>
@@ -21,7 +24,7 @@
       this.$el = $(this.el);
     },
     render(data = {}) {
-      let placeholders = ['name', 'url', 'singer', 'id'];
+      let placeholders = ['name', 'url', 'singer', 'id', 'cover'];
       let html = this.template;
       placeholders.map((string) => {
         html = html.replace(`__${string}__`, data[string] || '');
@@ -42,7 +45,7 @@
 
   let model = {
     data: {
-      name: '', singer: '', url: '', id: '',
+      name: '', singer: '', url: '', id: '', cover: '',
     },
     update(data) {
       Object.assign(this.data, data);
@@ -50,6 +53,7 @@
       song.set('name', data.name);
       song.set('singer', data.singer);
       song.set('url', data.url);
+      song.set('cover', data.cover);
       return song.save();
     },
     create(data) {
@@ -60,6 +64,7 @@
       song.set('name', data.name);
       song.set('singer', data.singer);
       song.set('url', data.url);
+      song.set('cover', data.cover);
       return song.save().then((newSong) => {
         // 成功保存之后，执行其他逻辑.
         let { id, attributes } = newSong;
@@ -82,7 +87,7 @@
       window.eventHub.on('new', (data) => { 
         if (this.model.data.id) {
           this.model.data = {
-            name: '', url: '', id: '', singer: '',
+            name: '', url: '', id: '', singer: '', cover: '',
           };
         } else {
           Object.assign(this.model.data, data); //data 可能为 undefined 来自 new_song
@@ -95,7 +100,7 @@
       });
     },
     create() {
-      let needs = 'name singer url'.split(' ');
+      let needs = 'name singer url cover'.split(' ');
       let data = {};
       needs.map(string => {
         data[string] = this.view.$el.find(`[name='${string}']`).val();
@@ -108,7 +113,7 @@
       });
     },
     update() {
-      let needs = 'name singer url'.split(' ');
+      let needs = 'name singer url cover'.split(' ');
       let data = {};
       needs.map(string => {
         data[string] = this.view.$el.find(`[name="${string}"]`).val();
