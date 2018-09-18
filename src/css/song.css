@@ -68,8 +68,10 @@
 	line-height: 24px;
 }
 .song-description .lines{
-	transition: transform 0.3s;
+  transition: transform 0.3s;
+  color: #aaa;
 }
+
 .song-description .lyric{
 	height: 72px;
 	overflow: hidden;

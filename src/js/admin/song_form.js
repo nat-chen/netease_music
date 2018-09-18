@@ -15,6 +15,9 @@
         <div class="row">
           <label>封面</label><input name="cover" value="__cover__" type="text">
         </div>
+        <div class="row">
+          <label>歌词</label><textarea  style="resize: none;" cols="50" rows="10" name="lyrics">__lyrics__</textarea>
+        </div>
         <div class="row actions">
           <input type="submit" value="提交">
         </div>
@@ -24,7 +27,7 @@
       this.$el = $(this.el);
     },
     render(data = {}) {
-      let placeholders = ['name', 'url', 'singer', 'id', 'cover'];
+      let placeholders = ['name', 'url', 'singer', 'id', 'cover', 'lyrics'];
       let html = this.template;
       placeholders.map((string) => {
         html = html.replace(`__${string}__`, data[string] || '');
@@ -45,7 +48,7 @@
 
   let model = {
     data: {
-      name: '', singer: '', url: '', id: '', cover: '',
+      name: '', singer: '', url: '', id: '', cover: '', 'lyrics': '',
     },
     update(data) {
       Object.assign(this.data, data);
@@ -54,6 +57,7 @@
       song.set('singer', data.singer);
       song.set('url', data.url);
       song.set('cover', data.cover);
+      song.set('lyrics', data.lyrics);
       return song.save();
     },
     create(data) {
@@ -65,6 +69,7 @@
       song.set('singer', data.singer);
       song.set('url', data.url);
       song.set('cover', data.cover);
+      song.set('lyrics', data.lyrics);
       return song.save().then((newSong) => {
         // 成功保存之后，执行其他逻辑.
         let { id, attributes } = newSong;
@@ -87,7 +92,7 @@
       window.eventHub.on('new', (data) => { 
         if (this.model.data.id) {
           this.model.data = {
-            name: '', url: '', id: '', singer: '', cover: '',
+            name: '', url: '', id: '', singer: '', cover: '', lyrics: '',
           };
         } else {
           Object.assign(this.model.data, data); //data 可能为 undefined 来自 new_song
@@ -100,7 +105,7 @@
       });
     },
     create() {
-      let needs = 'name singer url cover'.split(' ');
+      let needs = 'name singer url cover lyrics'.split(' ');
       let data = {};
       needs.map(string => {
         data[string] = this.view.$el.find(`[name='${string}']`).val();
@@ -113,7 +118,7 @@
       });
     },
     update() {
-      let needs = 'name singer url cover'.split(' ');
+      let needs = 'name singer url cover lyrics'.split(' ');
       let data = {};
       needs.map(string => {
         data[string] = this.view.$el.find(`[name="${string}"]`).val();
